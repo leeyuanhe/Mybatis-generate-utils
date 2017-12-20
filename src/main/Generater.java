@@ -35,12 +35,9 @@ public class Generater {
         generateInsertAndUpdateBatch();
 
         System.out.println("生成完毕！");
+
+
     }
-
-
-
-
-
 
     public  static void generateInsertAndUpdateBatch() throws Exception{
         //创建SAXReader对象
@@ -70,6 +67,12 @@ public class Generater {
 
     }
 
+    /**
+     * @description 生成批量更新
+     * @author hely
+     * @date 2017/12/6
+     * @param
+     */
     private static void generateUpdateBatch(Document document, List<Element> list) {
         
         
@@ -87,19 +90,42 @@ public class Generater {
 
         updateBathcSql.add(childElement);
 
-        String updatepath ="/mapper/update[@id='updateByPrimaryKey']";
+        String updatepath ="/mapper/update[@id='updateByPrimaryKeySelective']";
 
         List<Element> updateComposites = document.selectNodes(updatepath);
 
         for (Element composite : updateComposites) {
+
             String text = composite.getText();
-            String replace = text.replace("#{", "#{item.");
-            childElement.setText(replace);
+            String newText = text.substring(0, text.indexOf("where"));
+            childElement.addText(newText);
+            Element set = DocumentHelper.createElement("set");
+            childElement.add(set);
+            childElement.addText("\n where Id = #{item.id,jdbcType=INTEGER}");
+            Iterator<Element> iterator = composite.elementIterator();
+
+            if (iterator.hasNext()) {
+                Element elemCopy = detachElement(iterator);
+                Iterator<Element> child_iterator = elemCopy.elementIterator();
+                while(child_iterator.hasNext()){
+                    Element elecopy = detachElement(child_iterator);
+                    editColumnElement(elecopy,elecopy.attribute("test").getName(),"item."+elecopy.attribute("test")
+                            .getValue());
+                    set.add(elecopy);
+                }
+            }
         }
+
 
         list.add(list.size(),updateBathcSql);
     }
 
+    /**
+     * @description 生成批量插入
+     * @author hely
+     * @date 2017/12/6
+     * @param
+     */
     private static void generateInsertBatch(Document document, List<Element> list) {
 
         Element sql = DocumentHelper.createElement("insert");
@@ -133,6 +159,7 @@ public class Generater {
 
                 Iterator<Element> child_iterator = elemCopy.elementIterator();
                 while(child_iterator.hasNext()){
+
                     Element child = child_iterator.next();
                     editColumnElement(child,child.attribute("test").getName(),"insertList.get(0)."+child.attribute("test").getValue());
                 }
@@ -233,6 +260,13 @@ public class Generater {
         if (value.contains("model")){
             String childText = child.getText();
             String replace = childText.replace("#{", "#{model.");
+            child.setText(replace);
+
+        }
+
+        if (value.contains("item")){
+            String childText = child.getText();
+            String replace = childText.replace("#{", "#{item.");
             child.setText(replace);
 
         }

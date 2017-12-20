@@ -6,18 +6,33 @@
 <generatorConfiguration>
 
 	<context id="testTables" targetRuntime="MyBatis3">
-		<commentGenerator>
-			<!-- 是否去除自动生成的注释 true：是 ： false:否 -->
+		<!--<commentGenerator>
+			&lt;!&ndash; 是否去除自动生成的注释 true：是 ： false:否 &ndash;&gt;
 			<property name="suppressAllComments" value="true" />
+		</commentGenerator>-->
+
+		<!-- 指定生成的java文件的编码,没有直接生成到项目时中文可能会乱码 -->
+		<property name="javaFileEncoding" value="UTF-8"/>
+		<!-- 这里的type里写的是你的实现类的类全路径 -->
+		<commentGenerator type="MyCommentGenerator">
 		</commentGenerator>
+
+
+
 		<!--数据库连接的信息：驱动类、连接地址、用户名、密码 -->
-		<jdbcConnection driverClass="org.postgresql.Driver"
-			connectionURL="jdbc:postgresql://localhost/yancao0326" userId="postgres"
-			password="dcim">
+		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
+			connectionURL="jdbc:mysql://localhost:3306/cashdesk" userId="jira"
+			password="jira">
 		</jdbcConnection>
 
-		<!-- <jdbcConnection driverClass="oracle.jdbc.OracleDriver" connectionURL="jdbc:oracle:thin:@127.0.0.1:1521:yycg" 
-			userId="yycg" password="yycg"> </jdbcConnection> -->
+	<!--	<jdbcConnection driverClass="com.mysql.jdbc.Driver"
+						connectionURL="jdbc:mysql://localhost:3306/mysqltest" userId="root"
+						password="1234">
+		</jdbcConnection>-->
+
+		 <!--<jdbcConnection driverClass="net.sourceforge.jtds.jdbc.Driver"
+						 connectionURL="jdbc:jtds:sqlserver://182.92.66.103:1433/onlinetest"
+			userId="sa" password="huimin@2013HMonline"> </jdbcConnection>-->
 
 		<!-- 默认false，把JDBC DECIMAL 和 NUMERIC 类型解析为 Integer，为 true时把JDBC DECIMAL 
 			和 NUMERIC 类型解析为java.math.BigDecimal -->
@@ -27,8 +42,8 @@
 
 		<!-- targetProject:生成PO类的位置 -->
 		<javaModelGenerator targetPackage="po"
-					targetProject="/Volumes/Loading/dev/Mybatis-generate/src">
-		<!--targetProject=".\src">-->
+		targetProject=".\src">
+		<!--targetProject="/Volumes/Loading/dev/Mybatis-generate/src">-->
 			<!-- enableSubPackages:是否让schema作为包的后缀 -->
 			<property name="enableSubPackages" value="false" />
 			<!-- 从数据库返回的值被清理前后的空格 -->
@@ -36,15 +51,15 @@
 		</javaModelGenerator>
 		<!-- targetProject:mapper映射文件生成的位置 -->
 		<sqlMapGenerator targetPackage="mapper"
-					targetProject="/Volumes/Loading/dev/Mybatis-generate/src">
-		<!-- targetProject=".\src">-->
+		 targetProject=".\src">
+		<!--targetProject="/Volumes/Loading/dev/Mybatis-generate/src">-->
 			<!-- enableSubPackages:是否让schema作为包的后缀 -->
 			<property name="enableSubPackages" value="false" />
 		</sqlMapGenerator>
 		<!-- targetPackage：mapper接口生成的位置 -->
 		<javaClientGenerator type="XMLMAPPER" targetPackage="mapper"
-		           targetProject="/Volumes/Loading/dev/Mybatis-generate/src">
-		<!-- targetProject=".\src">-->
+		 targetProject=".\src">
+		<!--targetProject="/Volumes/Loading/dev/Mybatis-generate/src">-->
 			<!-- enableSubPackages:是否让schema作为包的后缀 -->
 			<property name="enableSubPackages" value="false" />
 		</javaClientGenerator>
@@ -56,7 +71,9 @@
 		以上包含了所有的生成的方法，只需在<table>中加上这个属性，生成的文件中就会排除掉相应的方法，例如<table tableName="user"  enableInsert="false"></table> 就不会生成insert方法
 		 -->
 		
-		<table tableName="wp_contracts"></table>
+		<table tableName="hm_branch_goods"></table>
+		<!--<table tableName="hm_item_info"></table>-->
+		<!--<table tableName="hm_hpt_orders_detail"></table>-->
 
 	</context>
 </generatorConfiguration>
